@@ -32,8 +32,9 @@ const Home: NextPage = () => {
         <ConnectWallet />
         <h1> Homepage Counter App by Sultan </h1>
         <h2> Using Mumbai Testnet </h2>
+        <h3>Contract address - {contractAddress}</h3>
         <h3>Host address - 0x3B4E78E08de9FF899EB5Ca82710C5f2cD26E0bBC</h3>
-        <p>Your address - {address}</p>
+        <h3>Your address - {address}</h3>
 
         <h1>{counter}</h1>
 
