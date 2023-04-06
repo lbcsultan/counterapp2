@@ -13,7 +13,6 @@ const Home: NextPage = () => {
   const address = useAddress()
   const contractAddress = '0x6dD32865Ad1a847A25538Aa07e19b7316DBfB050'
   const { contract } = useContract(contractAddress)
-  const { data: counter1, isLoading } = useContractRead(contract, 'getCounter')
   const [counter, setCounter] = useState('')
 
   async function getCounter() {
