@@ -1,55 +1,73 @@
-import { ConnectWallet } from "@thirdweb-dev/react";
-import type { NextPage } from "next";
-import styles from "../styles/Home.module.css";
+import {
+  ConnectWallet,
+  Web3Button,
+  useAddress,
+  useContract,
+  useContractRead,
+} from '@thirdweb-dev/react'
+import type { NextPage } from 'next'
+import styles from '../styles/Home.module.css'
+import { useEffect, useState } from 'react'
 
 const Home: NextPage = () => {
+  const address = useAddress()
+  const contractAddress = '0x6dD32865Ad1a847A25538Aa07e19b7316DBfB050'
+  const { contract } = useContract(contractAddress)
+  const { data: counter1, isLoading } = useContractRead(contract, 'getCounter')
+  const [counter, setCounter] = useState('')
+
+  async function getCounter() {
+    if (!contract) return
+
+    const counter = await contract.call('getCounter')
+    setCounter(counter.toString())
+  }
+
+  useEffect(() => {
+    getCounter()
+  })
+
   return (
     <div className={styles.container}>
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="http://thirdweb.com/">thirdweb</a>!
-        </h1>
+        <ConnectWallet />
+        <h1> Homepage Counter App by Sultan </h1>
+        <h2> Using Mumbai Testnet </h2>
+        <h3>Host address - 0x3B4E78E08de9FF899EB5Ca82710C5f2cD26E0bBC</h3>
+        <p>Your address - {address}</p>
 
-        <p className={styles.description}>
-          Get started by configuring your desired network in{" "}
-          <code className={styles.code}>pages/_app.tsx</code>, then modify the{" "}
-          <code className={styles.code}>pages/index.tsx</code> file!
-        </p>
-
-        <div className={styles.connect}>
-          <ConnectWallet />
-        </div>
+        <h1>{counter}</h1>
 
         <div className={styles.grid}>
-          <a href="https://portal.thirdweb.com/" className={styles.card}>
-            <h2>Portal &rarr;</h2>
-            <p>
-              Guides, references and resources that will help you build with
-              thirdweb.
-            </p>
-          </a>
-
-          <a href="https://thirdweb.com/dashboard" className={styles.card}>
-            <h2>Dashboard &rarr;</h2>
-            <p>
-              Deploy, configure and manage your smart contracts from the
-              dashboard.
-            </p>
-          </a>
-
-          <a
-            href="https://portal.thirdweb.com/templates"
-            className={styles.card}
-          >
-            <h2>Templates &rarr;</h2>
-            <p>
-              Discover and clone template projects showcasing thirdweb features.
-            </p>
-          </a>
+          <div className={styles.card}>
+            <Web3Button
+              className={styles.card}
+              contractAddress={contractAddress}
+              action={async (contract) => contract.call('decrementCounter')}
+            >
+              <h1>-</h1>
+            </Web3Button>
+          </div>
+          <div>
+            <Web3Button
+              contractAddress={contractAddress}
+              action={() => getCounter()}
+            >
+              <h1>Refresh Counter</h1>
+            </Web3Button>
+          </div>
+          <div className={styles.card}>
+            <Web3Button
+              contractAddress={contractAddress}
+              action={async (contract) => contract.call('incrementCounter')}
+            >
+              <h1>+</h1>
+            </Web3Button>
+          </div>
         </div>
       </main>
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
